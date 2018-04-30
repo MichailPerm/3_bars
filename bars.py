@@ -30,6 +30,7 @@ def get_closest_bar(json_data):
 
 
 if __name__ == '__main__':
+    json_data = load_data()
     the_biggest_bar = get_biggest_bar(json_data)
     the_smallest_bar = get_smallest_bar(json_data)
     LONGITUDE = input('Введите долготу: ')
