@@ -8,7 +8,7 @@ LONGITUDE = 0
 LATITUDE = 0
 
 
-def load_data(filepath):
+def load_data():
     full_path = API_ADDRESS.format(API_KEY)
     json_data = requests.get(full_path).json()
     return json_data['features']
@@ -30,7 +30,6 @@ def get_closest_bar(json_data):
 
 
 if __name__ == '__main__':
-    json_data = load_data('bars.json')
     the_biggest_bar = get_biggest_bar(json_data)
     the_smallest_bar = get_smallest_bar(json_data)
     LONGITUDE = input('Введите долготу: ')
