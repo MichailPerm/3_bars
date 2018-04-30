@@ -8,7 +8,8 @@ LATITUDE = 0
 
 def load_data():
     json_data = requests.get('https://apidata.mos.ru/v1/features/1796',
-                                params={'api_key': '2df488852a3e23b21e09a739eab2977a'}).json()
+                             params={'api_key': '2df488852a3e23b21e09a739eab2977a'})\
+        .json()
     return json_data['features']
 
 
