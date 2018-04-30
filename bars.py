@@ -1,42 +1,59 @@
-import requests
 import math
+import argparse
+import json
+import sys
 
 
-LONGITUDE = 0
-LATITUDE = 0
+def create_args_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("filepath")
+    return parser.parse_args()
 
 
-def load_data():
-    json_data = requests.get('https://apidata.mos.ru/v1/features/1796',
-                             params={'api_key': '2df488852a3e23b21e09a739eab2977a'})\
-        .json()
-    return json_data['features']
+def load_data(filepath):
+    with open(filepath, "r") as file:
+        dict_content = json.load(file)
+        return dict_content['features']
 
 
-def get_biggest_bar(json_data):
-    return max(json_data, key=lambda x: x['properties']['Attributes']['SeatsCount'])\
-        ['properties']['Attributes']['Name']
+def get_biggest_bar(dicts_list):
+    return max(
+        dicts_list,
+        key=lambda x: x['properties']['Attributes']['SeatsCount'])
 
 
-def get_smallest_bar(json_data):
-    return min(json_data, key=lambda x: x['properties']['Attributes']['SeatsCount'])\
-        ['properties']['Attributes']['Name']
+def get_smallest_bar(dicts_list):
+    return min(
+        dicts_list,
+        key=lambda x: x['properties']['Attributes']['SeatsCount'])
 
 
-def get_closest_bar(json_data):
-    return min(json_data, key=lambda x: math.sqrt(
-        ((float(LONGITUDE) - x['geometry']['coordinates'][0]) ** 2) + (
-                (float(LATITUDE) - x['geometry']['coordinates'][1]) ** 2)))\
-        ['properties']['Attributes']['Name']
+def get_closest_bar(dicts_list, longitude, latitude):
+    return min(dicts_list, key=lambda x: math.sqrt(
+        ((float(longitude) - x['geometry']['coordinates'][0]) ** 2) + (
+                (float(latitude) - x['geometry']['coordinates'][1]) ** 2)))
 
 
 if __name__ == '__main__':
-    json_data = load_data()
-    the_biggest_bar = get_biggest_bar(json_data)
-    the_smallest_bar = get_smallest_bar(json_data)
-    LONGITUDE = input('Введите долготу: ')
-    LATITUDE = input('Введите широту: ')
-    the_closest_bar = get_closest_bar(json_data)
-    print('Самый маленький бар - %s\n' % the_smallest_bar)
-    print('Самый большой бар - %s\n' % the_biggest_bar)
-    print('Самый близкий бар - %s\n' % the_closest_bar)
+    args = create_args_parser()
+    try:
+        dicts_list = load_data(args.filepath)
+    except json.decoder.JSONDecodeError:
+        print("File {} does not contain json data.".format(args.filepath))
+    except IOError:
+        print("Unable to read file {}.".format(args.filepath))
+    else:
+        if not dicts_list:
+            sys.exit("Program finished it's work, becasue of None json data.")
+        else:
+            the_biggest_bar = get_biggest_bar(dicts_list)
+            the_smallest_bar = get_smallest_bar(dicts_list)
+            longitude = input('Введите долготу: ')
+            latitude = input('Введите широту: ')
+            the_closest_bar = get_closest_bar(dicts_list, longitude, latitude)
+            print('Самый маленький бар - {}'.format(
+                the_smallest_bar['properties']['Attributes']['Name']))
+            print('Самый большой бар - {}'.format(
+                the_biggest_bar['properties']['Attributes']['Name']))
+            print('Самый близкий бар - {}'.format(
+                the_closest_bar['properties']['Attributes']['Name']))

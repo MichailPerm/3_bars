@@ -5,18 +5,17 @@
 
 # Как запустить
 
-Скрипт требует для своей работы установленного интерпретатора Python версии 3.5 и установленной библиотеки requests.
+Скрипт требует для своей работы установленного интерпретатора Python версии 3.5.
+Данные для запуска можно скачать по ссылке вида: https://apidata.mos.ru/v1/features/1796?api_key={здесь_ваш_ключ_API} 
 
 Запуск на Linux:
 
 ```bash
-$ python bars.py # possibly requires call of python3 executive instead of just python
+$ python bars.py data.json # possibly requires call of python3 executive instead of just python
 Введите долготу: 23
 Введите широту: 54
 Самый маленький бар - Сушистор
-
 Самый большой бар - Спорт бар «Красная машина»
-
 Самый близкий бар - Корпорация Бар
 
 ```
