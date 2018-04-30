@@ -1,16 +1,14 @@
 import requests
 import math
 
-API_KEY = '2df488852a3e23b21e09a739eab2977a'
-API_ADDRESS = 'https://apidata.mos.ru/v1/features/1796?api_key={}'
 
 LONGITUDE = 0
 LATITUDE = 0
 
 
 def load_data():
-    full_path = API_ADDRESS.format(API_KEY)
-    json_data = requests.get(full_path).json()
+    json_data = requests.get('https://apidata.mos.ru/v1/features/1796',
+                                params={'api_key': '2df488852a3e23b21e09a739eab2977a'}).json()
     return json_data['features']
 
 
@@ -25,7 +23,9 @@ def get_smallest_bar(json_data):
 
 
 def get_closest_bar(json_data):
-    return min(json_data, key=lambda x: math.sqrt(((float(LONGITUDE) - x['geometry']['coordinates'][0]) ** 2) + ((float(LATITUDE) - x['geometry']['coordinates'][1]) ** 2)))\
+    return min(json_data, key=lambda x: math.sqrt(
+        ((float(LONGITUDE) - x['geometry']['coordinates'][0]) ** 2) + (
+                (float(LATITUDE) - x['geometry']['coordinates'][1]) ** 2)))\
         ['properties']['Attributes']['Name']
 
 
