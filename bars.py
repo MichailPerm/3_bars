@@ -1,25 +1,74 @@
+import math
+import argparse
 import json
+import sys
+
+
+def create_args_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('filepath')
+    return parser.parse_args()
 
 
 def load_data(filepath):
-    f = open(filepath, 'r')
-    json_data = json.load(f, encoding='utf8')
-    f.close()
-    return json_data
+
+    with open(filepath, 'r') as file:
+        dict_content = json.load(file)
+        return dict_content['features']
 
 
-def get_biggest_bar(data):
-    pass
+def get_biggest_bar(bars):
+    return max(
+        bars,
+        key=lambda x: x['properties']['Attributes']['SeatsCount'])
 
 
-def get_smallest_bar(data):
-    pass
+def get_smallest_bar(bars):
+    return min(
+        bars,
+        key=lambda x: x['properties']['Attributes']['SeatsCount'])
 
 
-def get_closest_bar(data, longitude, latitude):
-    pass
+def get_closest_bar(bars, longitude, latitude):
+    return min(bars, key=lambda x: math.sqrt(
+        ((longitude - x['geometry']['coordinates'][0]) ** 2) + (
+         (latitude - x['geometry']['coordinates'][1]) ** 2)))
+
+
+def get_coordinate_value(coordinate_name):
+    coordinate_value = input('{}: '.format(coordinate_name))
+    return check_coordinate_value(
+        coordinate_value, coordinate_name)
+
+
+def check_coordinate_value(coordinate_value, coordinate_name):
+    try:
+        float_coordinate_value = float(coordinate_value)
+        return float_coordinate_value
+    except (ValueError, TypeError):
+        sys.exit(
+            '{} введена неверно. Программа завершила работу'.format(
+                coordinate_name))
 
 
 if __name__ == '__main__':
-    data = load_data('bars.json')
-    import pdb; pdb.set_trace()
+    args = create_args_parser()
+    try:
+        bars = load_data(args.filepath)
+    except json.decoder.JSONDecodeError:
+        sys.exit('Файл {} не содержит данных json.'.format(args.filepath))
+    except IOError:
+        sys.exit('Невозможно прочитать данные {}.'.format(args.filepath))
+    if not bars:
+        sys.exit('Программа завершила работу из-за отсутствия данных json.')
+    the_biggest_bar = get_biggest_bar(bars)
+    the_smallest_bar = get_smallest_bar(bars)
+    longitude = get_coordinate_value('Долгота')
+    latitude = get_coordinate_value('Широта')
+    the_closest_bar = get_closest_bar(bars, longitude, latitude)
+    print('Самый маленький бар - {}'.format(
+        the_smallest_bar['properties']['Attributes']['Name']))
+    print('Самый большой бар - {}'.format(
+        the_biggest_bar['properties']['Attributes']['Name']))
+    print('Самый близкий бар - {}'.format(
+        the_closest_bar['properties']['Attributes']['Name']))
