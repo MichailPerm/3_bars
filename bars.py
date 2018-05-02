@@ -38,17 +38,15 @@ def get_closest_bar(bars, longitude, latitude):
 def get_coordinate_value(coordinate_name):
     coordinate_value = input('{}: '.format(coordinate_name))
     return check_coordinate_value(
-        coordinate_value, coordinate_name)
+        coordinate_value)
 
 
-def check_coordinate_value(coordinate_value, coordinate_name):
+def check_coordinate_value(coordinate_value):
     try:
         float_coordinate_value = float(coordinate_value)
         return float_coordinate_value
     except (ValueError, TypeError):
-        sys.exit(
-            '{} введена неверно. Программа завершила работу'.format(
-                coordinate_name))
+        return None
 
 
 if __name__ == '__main__':
@@ -64,7 +62,13 @@ if __name__ == '__main__':
     the_biggest_bar = get_biggest_bar(bars)
     the_smallest_bar = get_smallest_bar(bars)
     longitude = get_coordinate_value('Долгота')
+    if longitude is None:
+        sys.exit(
+            'Долгота введена неверно. Программа завершила работу.')
     latitude = get_coordinate_value('Широта')
+    if latitude is None:
+        sys.exit(
+            'Широта введена неверно. Программа завершила работу.')
     the_closest_bar = get_closest_bar(bars, longitude, latitude)
     print('Самый маленький бар - {}'.format(
         the_smallest_bar['properties']['Attributes']['Name']))
