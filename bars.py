@@ -62,15 +62,14 @@ def get_bars(bars):
     the_biggest_bar = get_biggest_bar(bars)
     the_smallest_bar = get_smallest_bar(bars)
     longitude = get_coordinate_value('Долгота')
-    if longitude is None:
-        sys.exit(
-            'Долгота введена неверно. Программа завершила работу.')
     latitude = get_coordinate_value('Широта')
+    if longitude is None or latitude is None:
+        return None
     if latitude is None:
-        sys.exit(
-            'Широта введена неверно. Программа завершила работу.')
+
     the_closest_bar = get_closest_bar(bars, longitude, latitude)
     print_bars(the_biggest_bar, the_smallest_bar, the_closest_bar)
+    return True
 
 
 if __name__ == '__main__':
@@ -83,4 +82,6 @@ if __name__ == '__main__':
         sys.exit('Невозможно прочитать данные {}.'.format(args.filepath))
     if not bars:
         sys.exit('Программа завершила работу из-за отсутствия данных json.')
-    get_bars(bars)
+    if get_bars(bars) is None:
+        sys.exit('Неверно заданы координаты. Программа завершила работу.')
+
