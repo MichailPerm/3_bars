@@ -11,7 +11,6 @@ def create_args_parser():
 
 
 def load_data(filepath):
-
     with open(filepath, 'r') as file:
         dict_content = json.load(file)
         return dict_content['features']
@@ -50,7 +49,7 @@ def check_coordinate_value(coordinate_value):
 
 
 def print_bars(the_biggest_bar, the_smallest_bar, the_closest_bar):
-    print('Самый маленький бар - {}'.format(
+    print('Самый маленький бар: {}'.format(
         the_smallest_bar['properties']['Attributes']['Name']))
     print('Самый большой бар - {}'.format(
         the_biggest_bar['properties']['Attributes']['Name']))
@@ -78,8 +77,5 @@ if __name__ == '__main__':
         sys.exit('Файл {} не содержит данных json.'.format(args.filepath))
     except IOError:
         sys.exit('Невозможно прочитать данные {}.'.format(args.filepath))
-    if not bars:
-        sys.exit('Программа завершила работу из-за отсутствия данных json.')
     if get_bars(bars) is None:
         sys.exit('Неверно заданы координаты. Программа завершила работу.')
-
