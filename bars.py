@@ -65,8 +65,6 @@ def get_bars(bars):
     latitude = get_coordinate_value('Широта')
     if longitude is None or latitude is None:
         return None
-    if latitude is None:
-
     the_closest_bar = get_closest_bar(bars, longitude, latitude)
     print_bars(the_biggest_bar, the_smallest_bar, the_closest_bar)
     return True
