@@ -34,12 +34,6 @@ def get_closest_bar(bars, longitude, latitude):
          (latitude - x['geometry']['coordinates'][1]) ** 2)))
 
 
-def get_coordinate_value(coordinate_name):
-    coordinate_value = input('{}: '.format(coordinate_name))
-    return check_coordinate_value(
-        coordinate_value)
-
-
 def check_coordinate_value(coordinate_value):
     try:
         float_coordinate_value = float(coordinate_value)
@@ -48,24 +42,19 @@ def check_coordinate_value(coordinate_value):
         return None
 
 
-def print_bars(the_biggest_bar, the_smallest_bar, the_closest_bar):
-    print('Самый маленький бар: {}'.format(
-        the_smallest_bar['properties']['Attributes']['Name']))
-    print('Самый большой бар - {}'.format(
-        the_biggest_bar['properties']['Attributes']['Name']))
-    print('Самый близкий бар - {}'.format(
-        the_closest_bar['properties']['Attributes']['Name']))
+def print_bar(bar, msg):
+    print(msg.format(bar['properties']['Attributes']['Name']))
 
 
-def get_bars(bars):
+def get_bars(bars, longitude, latitude):
     the_biggest_bar = get_biggest_bar(bars)
     the_smallest_bar = get_smallest_bar(bars)
-    longitude = get_coordinate_value('Долгота')
-    latitude = get_coordinate_value('Широта')
     if longitude is None or latitude is None:
         return None
     the_closest_bar = get_closest_bar(bars, longitude, latitude)
-    print_bars(the_biggest_bar, the_smallest_bar, the_closest_bar)
+    print_bar(the_smallest_bar, 'Самый маленький бар: {}')
+    print_bar(the_biggest_bar, 'Самый большой бар - {}')
+    print_bar(the_closest_bar, 'Самый близкий бар - {}')
     return True
 
 
@@ -77,5 +66,7 @@ if __name__ == '__main__':
         sys.exit('Файл {} не содержит данных json.'.format(args.filepath))
     except IOError:
         sys.exit('Невозможно прочитать данные {}.'.format(args.filepath))
-    if get_bars(bars) is None:
+    longitude = check_coordinate_value(input('Долгота: '))
+    latitude = check_coordinate_value(input('Широта: '))
+    if get_bars(bars, longitude, latitude) is None:
         sys.exit('Неверно заданы координаты. Программа завершила работу.')
