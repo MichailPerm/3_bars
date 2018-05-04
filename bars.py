@@ -47,15 +47,13 @@ def print_bar(bar, msg):
 
 
 def get_bars(bars, longitude, latitude):
-    the_biggest_bar = get_biggest_bar(bars)
-    the_smallest_bar = get_smallest_bar(bars)
+    bars_result = {}
+    bars_result['the_biggest_bar'] = get_biggest_bar(bars)
+    bars_result['the_smallest_bar'] = get_smallest_bar(bars)
     if longitude is None or latitude is None:
         return None
-    the_closest_bar = get_closest_bar(bars, longitude, latitude)
-    print_bar(the_smallest_bar, 'Самый маленький бар: {}')
-    print_bar(the_biggest_bar, 'Самый большой бар - {}')
-    print_bar(the_closest_bar, 'Самый близкий бар - {}')
-    return True
+    bars_result['the_closest_bar'] = get_closest_bar(bars, longitude, latitude)
+    return bars_result
 
 
 if __name__ == '__main__':
@@ -68,5 +66,9 @@ if __name__ == '__main__':
         sys.exit('Невозможно прочитать данные {}.'.format(args.filepath))
     longitude = check_coordinate_value(input('Долгота: '))
     latitude = check_coordinate_value(input('Широта: '))
-    if get_bars(bars, longitude, latitude) is None:
+    bars_result = get_bars(bars, longitude, latitude)
+    if bars_result is None:
         sys.exit('Неверно заданы координаты. Программа завершила работу.')
+    print_bar(bars_result['the_smallest_bar'], 'Самый маленький бар: {}')
+    print_bar(bars_result['the_biggest_bar'], 'Самый большой бар - {}')
+    print_bar(bars_result['the_closest_bar'], 'Самый близкий бар - {}')
